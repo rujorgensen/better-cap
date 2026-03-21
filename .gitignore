@@ -1,0 +1,60 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# build output
+dist/
+
+# dependencies
+node_modules/
+/.pnp
+.pnp.js
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# environment variables
+.env.production
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# jetbrains setting folder
+.idea/
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# macOS-specific files
+.DS_Store
+
+# misc
+*.pem
+
+# vercel
+.vercel
+
+**/*.trace
+**/*.zip
+**/*.tar.gz
+**/*.tgz
+**/*.log
+**/*.bun
+
+# Added by NX
+
+.nx/cache
+.nx/workspace-data
+.cursor/rules/nx-rules.mdc
+
+vite.config.*.timestamp*
+.angular
+
+# Prisma generated types. Don't check in the generated types, keeping one source of truth; the Prisma schemas
+@prisma-types/**/*

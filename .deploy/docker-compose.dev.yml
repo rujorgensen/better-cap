@@ -1,0 +1,29 @@
+services:
+  # ******************************************************************************
+  # *** Infrastructure
+  # ******************************************************************************
+
+  bettercap-reproduction-dev:
+    image: postgres:18.3-bookworm
+    restart: always
+    container_name: bettercap-reproduction-dev
+    environment:
+      POSTGRES_USER: dev-user
+      POSTGRES_PASSWORD: dev-password
+      POSTGRES_DB: dev-db
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "dev-user", "-d", "dev-db"]
+      interval: 1s
+      timeout: 5s
+      retries: 50
+    ports:
+      - "5459:5432"
+    networks:
+      - bettercap-network
+
+# *******************************************************************************
+# *** Networks
+# *******************************************************************************
+networks:
+  bettercap-network:
+    driver: bridge

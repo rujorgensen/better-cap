@@ -1,0 +1,40 @@
+{
+    "angularCompilerOptions": {
+        "enableI18nLegacyMessageIdFormat": false,
+        "strictInjectionParameters": true,
+        "strictInputAccessModifiers": true,
+        "typeCheckHostBindings": true,
+        "strictTemplates": true
+    },
+    "compileOnSave": false,
+    "compilerOptions": {
+        "esModuleInterop": true,
+        "baseUrl": ".",
+        "rootDir": ".",
+        "sourceMap": true,
+        "declaration": false,
+        "moduleResolution": "node",
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "importHelpers": true,
+        "target": "es2024",
+        "module": "esnext",
+        "lib": [
+            "es2022",
+            "ES2023.Array",
+            "dom"
+        ],
+        "skipLibCheck": true,
+        "skipDefaultLibCheck": true,
+        "strictNullChecks": true,
+        "strict": true,
+        "paths": {
+            "@prisma-types/bettercap": [
+                "@prisma-types/bettercap/client.ts"
+            ]
+        }
+    },
+    "exclude": [
+        "node_modules"
+    ]
+}

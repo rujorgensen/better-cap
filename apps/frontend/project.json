@@ -1,0 +1,120 @@
+{
+    "name": "bettercap-ui",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "application",
+    "prefix": "app",
+    "sourceRoot": "apps/frontend/src",
+    "targets": {
+        "build": {
+            "executor": "@angular/build:application",
+            "outputs": [
+                "{options.outputPath}"
+            ],
+            "options": {
+                "outputPath": "dist/apps/frontend",
+                "browser": "apps/frontend/src/main.ts",
+                "tsConfig": "apps/frontend/tsconfig.app.json",
+                "inlineStyleLanguage": "scss",
+                "assets": [
+                    {
+                        "glob": "**/*",
+                        "input": "apps/frontend/public"
+                    },
+                    {
+                        "glob": "**/*",
+                        "input": "apps/frontend/icons"
+                    }
+                ]
+            },
+            "configurations": {
+                "production": {
+                    "optimization": {
+                        "styles": {
+                            "inlineCritical": false
+                        }
+                    },
+                    "budgets": [
+                        {
+                            "type": "initial",
+                            "maximumWarning": "500kb",
+                            "maximumError": "500kb"
+                        },
+                        {
+                            "type": "anyComponentStyle",
+                            "maximumWarning": "4kb",
+                            "maximumError": "8kb"
+                        }
+                    ],
+                    "outputHashing": "all"
+                },
+                "development": {
+                    "optimization": false,
+                    "extractLicenses": false,
+                    "sourceMap": true
+                }
+            },
+            "defaultConfiguration": "production"
+        },
+        "serve": {
+            "continuous": true,
+            "executor": "@angular/build:dev-server",
+            "options": {
+                "port": 3101
+            },
+            "configurations": {
+                "development": {
+                    "buildTarget": "bettercap-ui:build:development"
+                }
+            },
+            "defaultConfiguration": "development",
+            "dependsOn": [
+                "bettercap-api:serve"
+            ]
+        },
+        "cap-sync": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "bunx cap sync",
+                "cwd": "apps/frontend"
+            },
+            "dependsOn": [
+                "build"
+            ]
+        },
+        "cap-open": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "bunx cap open android",
+                "cwd": "apps/frontend"
+            }
+        },
+        "cap-run": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "bunx cap run --target=Pixel_7 android",
+                "cwd": "apps/frontend"
+            },
+            "dependsOn": [
+                "cap-sync"
+            ]
+        },
+        "cap-build": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "bunx cap build android",
+                "cwd": "apps/frontend"
+            },
+            "dependsOn": [
+                "cap-assets",
+                "cap-sync"
+            ]
+        },
+        "cap-assets": {
+                    "executor": "nx:run-commands",
+            "options": {
+                "command": "bunx capacitor-assets generate --assetPath public/capacitor-assets",
+                "cwd": "apps/frontend"
+            }
+        }
+    }
+}

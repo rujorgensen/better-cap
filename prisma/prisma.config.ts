@@ -1,0 +1,11 @@
+import type { PrismaConfig } from 'prisma';
+
+export default {
+    schema: 'schema.prisma',
+    migrations: {
+        path: 'migrations',
+    },
+    datasource: {
+        url: Bun.env['BETTERCAP_DATABASE_URL']
+    },
+} satisfies PrismaConfig;

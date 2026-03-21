@@ -1,0 +1,51 @@
+:host {
+    main {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        font-family: system-ui, sans-serif;
+
+        .sign-in-container {
+            background: white;
+            padding: calc(var(--viewport-padding-responsive) * 2);
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+            margin: var(--viewport-padding-responsive);
+
+            h1 {
+                color: #333;
+                margin-bottom: 0.5rem;
+                font-size: 2rem;
+                font-weight: 600;
+            }
+
+            .sign-in-form {
+                margin: 2rem;
+                display: grid;
+                place-items: center;
+            }
+        }
+
+        button {
+            background: white;
+            display: grid;
+            place-items: center;
+            padding: 20px;
+            border-radius: 8px;
+            cursor: pointer;
+    
+            &:hover {
+                background: #f0f0f0;
+            }
+        }
+    
+        label {
+            font-weight: bold;
+        }
+    }
+}
