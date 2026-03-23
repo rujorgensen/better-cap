@@ -9,11 +9,21 @@ if (Bun.env.NODE_ENV !== 'production' && Bun.env.NODE_ENV !== 'development') {
 
 // User middleware (compute user and session and pass to routes)
 const betterAuth = new Elysia({
-    name: 'better-auth',
+    name: 'better-auth-plugin',
 })
-    .all('/api/auth/*', (context: Context) => {
-        console.log(`hit: ${context.request.url}`);
+    .all('/api/auth/*', async (context: Context) => {
+        console.log(`\r\n\r\n🔒⭕\t(better-auth-plugin) [${context.request.method}] ${context.request.url}`);
 
+        /*
+            # Request headers
+            console.log('Incomming headers:', context.request.headers.get('cookie'));
+
+            eg, when signed in:
+                cookie: better-auth.session_token=X6VCO0TpjtKhPfzhf5gUkFEN9C9v4ayF.soc3a9WnA8xoLT4UgXB3h6B%2FtC0VFAto33VreSjjMRk%3D
+
+            eg, when not signed in:
+                cookie: null
+         */
         if (
             [
                 'POST',
@@ -22,10 +32,32 @@ const betterAuth = new Elysia({
         ) {
             const host: string | null = context.request.headers.get('x-forwarded-host') || context.request.headers.get('host');
 
-            return getDomainAuthInstanceOrThrow(host)
+            console.log(`🔒⭕\t(better-auth-plugin) Get BetterAuth instance for host '${host}', and handle request`);
+
+            const response: Response = await getDomainAuthInstanceOrThrow(host)
                 .handler(context.request);
+
+            /*
+                # Response.headers
+
+                eg, when sign in:
+                    "set-cookie": [ "better-auth.session_token=X6VCO0TptKhPfzhf5gUkFEN9C9v4ayF.soc3a9WnA8xoLT4UgXB3h6B%2FtC0VFAto33VreSjjMRk%3D;
+
+                eg, when sign out:
+                    "set-cookie": [ "better-auth.session_token=; ... 
+             */
+
+            if (response.ok || (response.status === 302)) {
+                console.log(`🔓✅\t(better-auth-plugin) [${context.request.method}] response status: '${response.status}'`);
+            } else {
+                console.warn(response);
+                console.error(`🔒⛔\t(better-auth-plugin) [${context.request.method}] response status: '${response.status}'`);
+            }
+
+            return response;
         }
 
+        console.error(`🔒⛔\t(better-auth-plugin) [${context.request.method}] 405 ('method not allowed')`);
         context.status(405); // 'Method Not Allowed'
 
         return undefined;
@@ -35,39 +67,19 @@ const app = new Elysia()
 
     .use(betterAuth)
 
-    // CORS
+    // CORS (always apply)
     .use(
-        cors(
-            Bun.env.NODE_ENV === 'production'
-                ? undefined
-                // Allow all origins and methods in development for testing
-                : {},
-        ),
+        cors({}),
     )
 
-  //  .get('/', () => 'You\'ve reached the Better Auth Elysia backend')
-
-    //.get('/', () => 'Handled by server on 3100')
-    .all('/*', async ({ request, set, path }) => {
-        console.log(`Proxying request to upstream: ${request.method} ${path}`);
-
-        const upstreamUrl = `http://localhost:3101${path}`;
-        const upstreamResponse = await fetch(upstreamUrl, {
-            method: request.method,
-            headers: request.headers,
-            body: request.body,
-        });
-
-        // Forward the upstream response
-        set.status = upstreamResponse.status;
-        return new Response(upstreamResponse.body, {
-            status: upstreamResponse.status,
-            headers: upstreamResponse.headers,
-        });
+    .get('/', () => {
+        console.log(`👋\tReceived request for '/' route, responding with greeting message`)
+        ;
+        return 'You\'ve reached the Better Auth Elysia backend';
     })
 
     .listen(3100, ({ url }) => {
-        console.log(`🚀🦊 Elysia server (${version}) running on ${url.href}, NODE_ENV: '${Bun.env.NODE_ENV}'`);
+        console.log(`🚀🦊\tElysia server (${version}) running on ${url.href}, environment: '${Bun.env.NODE_ENV}'`);
     });
 ;
 

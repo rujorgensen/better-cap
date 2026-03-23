@@ -1,33 +1,36 @@
-1. Install dependencies:
-```
-    bun install
-```
+## Setup & Run
 
-2. Start local PostgreSQL server
-```
-    bun run docker:bettercap:dev:up
-```
+1. **Install dependencies**
+   ```sh
+   bun install
+   ```
 
-3. Add properties to .env
-```
-    GOOGLE_CLIENT_ID=
-    GOOGLE_CLIENT_SECRET=
-```
-4. Start SQL server and generate + migrate Prisma schema:
-```
-    bun run prisma:deploy
-```
+2. **Start local PostgreSQL server**
+   ```sh
+   bun run docker:bettercap:dev:up
+   ```
 
-5. Run server
-```
-    nx run bettercap-ui:serve
-```
+3. **Add properties to `.env`**
+   ```env
+   GOOGLE_CLIENT_ID=
+   GOOGLE_CLIENT_SECRET=
+   ```
 
-    Go to http://localhost:3100 and try to login
+4. **Set up database and Prisma**
+   ```sh
+   bun run prisma:deploy
+   ```
 
-6. Run build for, and run, Capacitor
-```
-    nx run bettercap-ui:build
-    nx run bettercap-ui:cap-sync
-    nx run bettercap-ui:cap-run
-```
+5. **Run the server**
+   ```sh
+   nx run bettercap-ui:serve
+   ```
+   Open [http://localhost:3101](http://localhost:3101) and try to log in.
+
+6. **Build and run Capacitor**
+   This builds the app, sync Capacitor and runs:
+
+
+   ```sh
+   nx run bettercap-ui:cap-run
+   ```

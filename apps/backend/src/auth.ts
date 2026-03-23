@@ -57,9 +57,10 @@ const createAuthForDomain = (
         provider: 'postgresql',
     }),
     trustedOrigins: [
-        'http://192.168.1.200:3100',
         'http://localhost:3101',
+        // The URL scheme used by Capacitor apps
         'capacitor://localhost',
+        // Deep link used by the Android app
         'bettercapapp://'
     ],
     socialProviders: {
@@ -75,15 +76,12 @@ const createAuthForDomain = (
     ],
 });
 
-export type TAuth = ReturnType<typeof createAuthForDomain>;
-export type TUser = ReturnType<typeof createAuthForDomain>['$Infer']['Session']['user'];
-
 // Better Auth requires baseURL to be configured. If it is not set, the origin
 // of the first request will be used, both for that request and for all
 // subsequent requests. To support multiple origins, we create a Better Auth
 // instance per origin. In the future, Better Auth may support dynamic baseURL.
 // Ref: https://github.com/better-auth/better-auth/issues/4151
-const authInstances = new Map<string, TAuth>();
+const authInstances = new Map<string, ReturnType<typeof createAuthForDomain>>();
 
 export const getDomainAuthInstanceOrThrow = (
     host: string | null | undefined,
@@ -94,7 +92,7 @@ export const getDomainAuthInstanceOrThrow = (
     }
 
     if (!authInstances.has(host)) {
-        console.log(`Creating new BetterAuth instance for host: '${host}'`);
+        console.log(`🔨\tCreating new BetterAuth instance for host: '${host}'`);
 
         const baseURL_ = host?.includes('localhost') ? undefined : host;
 
