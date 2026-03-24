@@ -57,6 +57,8 @@ const createAuthForDomain = (
         provider: 'postgresql',
     }),
     trustedOrigins: [
+        'http://localhost',
+        'https://localhost',
         'http://localhost:3101',
         // The URL scheme used by Capacitor apps
         'capacitor://localhost',
@@ -67,6 +69,8 @@ const createAuthForDomain = (
         google: {
             clientId: googleClientId,
             clientSecret: googleClientSecret,
+            // Callback on the server
+            // redirectURI: "http://localhost:3100/api/auth/callback/google"
         },
     },
     plugins: [

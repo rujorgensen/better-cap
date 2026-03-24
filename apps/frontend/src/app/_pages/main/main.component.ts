@@ -1,10 +1,11 @@
-import { ChangeDetectionStrategy, Component, signal, WritableSignal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, signal, WritableSignal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { toast } from 'ngx-sonner';
-import { authClient, betterAuthBaseURL } from '../../_auth/auth-client';
+import { authClient, betterAuthBaseURL, MACHINE_URL } from '../../_auth/auth-client';
 import { AsyncPipe } from '@angular/common';
 import { UserService } from '../../_services/user.service';
 import { version } from '../../../../../../package.json';
+import { Capacitor } from '@capacitor/core';
 
 @Component({
     templateUrl: './main.component.html',
@@ -17,22 +18,32 @@ import { version } from '../../../../../../package.json';
     ],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MainComponent {
+export class MainComponent implements OnInit {
 
     protected readonly signingIn: WritableSignal<boolean> = signal(false);
     protected readonly version: string = version;
-    protected readonly betterAuthBaseURL: string = betterAuthBaseURL;
-    protected readonly callbackURL: string = window.location.host.includes('http') ?
-        `http://${window.location.origin}`
-        :
-        window.location.origin
-        ;
+    protected readonly betterAuthBaseURL: string;
+    protected readonly origin: string = window.location.origin;
 
     private loadingToast: string | number | undefined;
 
     constructor(
         protected readonly _userService: UserService,
-    ) { }
+    ) {
+        if (!betterAuthBaseURL) {
+            this.betterAuthBaseURL = `<LOCAL IP MUST BE SET IN "auth-client.ts">`;
+        } else {
+            this.betterAuthBaseURL = betterAuthBaseURL;
+        }
+    }
+
+    public ngOnInit(
+
+    ): void {
+        if (!MACHINE_URL && Capacitor.isNativePlatform()) {
+            toast.error('Set the URL of the host machine for the native platform in "auth-client.ts"');
+        }
+    }
 
     /**
      * Sign in using Google.
@@ -48,7 +59,7 @@ export class MainComponent {
                 {
                     provider: 'google',
                     // The URL to redirect to after sign-in
-                    callbackURL: this.callbackURL,
+                    callbackURL: this.origin,
                 },
                 {
                     onRequest: () => {
